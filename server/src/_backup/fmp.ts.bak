@@ -1,0 +1,82 @@
+--------------------------------------------------
+import axios from "axios";
+import { FMP_API_KEY } from "../config.js";
+import { parseFmpDate } from "./utils.js";
+
+const BASE = "https://financialmodelingprep.com";
+
+async function get<T>(path: string, params: Record<string, any> = {}): Promise<T> {
+  if (!FMP_API_KEY) throw new Error("Missing FMP_API_KEY");
+  const url = `${BASE}${path}`;
+  const { data } = await axios.get<T>(url, {
+    params: { apikey: FMP_API_KEY, ...params },
+    timeout: 15000,
+    validateStatus: () => true // let us inspect non-2xx without throwing
+  });
+  // If FMP returns an error payload or non-2xx, throw to let callers decide
+  if ((data as any)?.["Error Message"]) {
+    throw new Error((data as any)["Error Message"]);
+  }
+  return data;
+}
+
+export async function getTranscriptLatest(ticker: string): Promise<{ text: string; call_datetime?: string | null; } | null> {
+  try {
+    const data = await get<any[]>("/api/v4/earning_call_transcript", { symbol: ticker });
+    if (Array.isArray(data) && data.length) {
+      const best = [...data].sort((a, b) => (b.content?.length ?? 0) - (a.content?.length ?? 0))[0];
+      const call_dt = best?.date ? parseFmpDate(best.date)?.toISOString() : null;
+      return { text: best?.content ?? "", call_datetime: call_dt ?? null };
+    }
+  } catch {}
+  return null;
+}
+
+export async function getTranscriptByPeriod(ticker: string, year: number, quarter: number): Promise<{ text: string; call_datetime?: string | null; } | null> {
+  try {
+    const data = await get<any[]>(`/api/v3/earning_call_transcript/${ticker}`, { year, quarter });
+    if (Array.isArray(data) && data.length) {
+      const best = [...data].sort((a, b) => (b.content?.length ?? 0) - (a.content?.length ?? 0))[0];
+      const call_dt = best?.date ? parseFmpDate(best.date)?.toISOString() : null;
+      return { text: best?.content ?? "", call_datetime: call_dt ?? null };
+    }
+  } catch {}
+  return null;
+}
+
+export async function getQuoteNow(ticker: string): Promise<{ price: number | null; previousClose: number | null; }>{
+  const arr = await get<any[]>(`/api/v3/quote/${ticker}`);
+  const q = Array.isArray(arr) && arr.length ? arr[0] : {};
+  const price = typeof q.price === "number" ? q.price : (typeof q?.c === "number" ? q.c : null);
+  const prev = typeof q.previousClose === "number" ? q.previousClose : (typeof q?.pc === "number" ? q.pc : null);
+  return { price, previousClose: prev };
+}
+
+export async function getLastTwoDailyCloses(ticker: string): Promise<number[]> {
+  const data = await get<any>(`/api/v3/historical-price-full/${ticker}`, { timeseries: 2, serietype: "line" });
+  const hist = data?.historical ?? [];
+  const closes = hist.slice(0, 2).map((h: any) => Number(h.close)).filter((n: any) => !isNaN(n));
+  return closes;
+}
+
+export async function getStockNewsWindow(ticker: string, days: number): Promise<{ title: string; url: string; text: string; publishedAt: string; }[]> {
+  try {
+    const limit = Math.min(Math.max(days * 20, 20), 200); // heuristic
+    const arr = await get<any[]>(`/api/v3/stock_news`, { tickers: ticker, limit });
+    const now = Date.now();
+    const cutoff = now - days * 24 * 3600 * 1000;
+    return (arr || [])
+      .map((n: any) => ({
+        title: n.title || "",
+        url: n.url || n.link || "",
+        text: n.text || "",
+        publishedAt: (parseFmpDate(n.publishedDate)?.toISOString()) || ""
+      }))
+      .filter(n => new Date(n.publishedAt).getTime() >= cutoff);
+  } catch {
+    // Endpoint not available on this plan → degrade gracefully
+    return [];
+  }
+}
+
+

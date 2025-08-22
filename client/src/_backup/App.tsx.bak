@@ -1,0 +1,30 @@
+--------------------------------------------------
+import React, { useState } from "react";
+import DebriefForm from "./components/DebriefForm";
+import DebriefView from "./components/DebriefView";
+import LiveConsole from "./components/LiveConsole";
+import { generateDebrief } from "./services/api";
+import type { Debrief } from "./types";
+import "./styles.css";
+
+export default function App() {
+  const [debrief, setDebrief] = useState<Debrief | null>(null);
+
+  async function onSubmit(args: { ticker: string; year?: number; quarter?: number; agentic?: boolean }) {
+    const res = await generateDebrief(args);
+    setDebrief(res);
+  }
+
+  return (
+    <div className="container">
+      <div className="app-title">📈 Earnings Debrief</div>
+      <DebriefForm onSubmit={onSubmit} />
+      <div className="row">
+        <div>{debrief ? <DebriefView data={debrief} /> : <div className="card">Generate a debrief to see results.</div>}</div>
+        <div>{debrief ? <LiveConsole ticker={debrief.ticker} /> : <div className="card">Live console appears after generating a debrief.</div>}</div>
+      </div>
+    </div>
+  );
+}
+
+

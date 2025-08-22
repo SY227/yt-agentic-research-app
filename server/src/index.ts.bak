@@ -1,0 +1,21 @@
+--------------------------------------------------
+import express from "express";
+import cors from "cors";
+import { PORT } from "./config.js";
+import earningsRouter from "./routes/earnings.js";
+import consoleRouter from "./routes/console.js";
+
+const app = express();
+app.use(cors());
+app.use(express.json({ limit: "1mb" }));
+
+app.get("/healthz", (_req, res) => res.json({ ok: true }));
+
+app.use("/api/earnings", earningsRouter);
+app.use("/api", consoleRouter);
+
+app.listen(PORT, () => {
+  console.log(`[server] listening on http://0.0.0.0:${PORT}`);
+});
+
+

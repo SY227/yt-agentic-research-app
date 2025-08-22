@@ -1,0 +1,9 @@
+--------------------------------------------------
+services:
+  server:
+    environment:
+      - FMP_API_KEY=${FMP_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL}
+
+

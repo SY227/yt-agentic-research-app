@@ -1,0 +1,22 @@
+--------------------------------------------------
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "lib": [
+      "ES2021",
+      "DOM"
+    ],
+    "module": "ES2020",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src"
+  ]
+}
+
