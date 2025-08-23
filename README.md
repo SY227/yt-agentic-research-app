@@ -1,4 +1,4 @@
-# yt-agentic-research-app
+# YouTube Agentic Research Web App
 
 Research any topic on **YouTube** and get **structured insights in seconds**.
 This agentic web app automates the heavy lifting: it finds the best videos, summarizes them with timestamps and confidence, and synthesizes a clean report with a TL;DR, themes, highlights, risks/opportunities, and next steps.
@@ -25,19 +25,26 @@ This agentic web app automates the heavy lifting: it finds the best videos, summ
 - Data: YouTube Search (video metadata) + application-level filtering
 
 ## Local development
-\`\`\`bash
+```bash
 cp server/.env.example server/.env
 cp client/.env.example client/.env
 cd server && npm install && npm run dev
 cd client && npm install && npm run dev
-\`\`\`
+```
 
 ## Docker
-\`\`\`bash
+```bash
 docker compose up --build
-\`\`\`
+```
 
 ## Environment
+- Root `.env` (create in project root):
+```bash
+PORT=8787
+YOUTUBE_API_KEY=""
+GEMINI_API_KEY=""
+MAX_VIDEOS=8
+```
 - server/.env
   - GEMINI_API_KEY (optional)
   - GEMINI_MODEL (default: gemini-2.5-flash)
@@ -45,14 +52,14 @@ docker compose up --build
   - VITE_BACKEND_URL (default: http://localhost:4000)
 
 ## Repository layout
-\`\`\`
+```
 /client
 /server
 .github/workflows/
 README.md
 LICENSE
 .gitignore
-\`\`\`
+```
 
 ## Roadmap
 - Multi-source research (papers, docs, blogs) with source weighting
