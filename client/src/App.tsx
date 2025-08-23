@@ -26,7 +26,7 @@ export default function App() {
 
   return (
     <div className="container">
-      <div className="app-title">📈 Earnings Debrief</div>
+      <div className="app-title">🎬 YouTube Agentic Research</div>
 
       {error && <div className="card" style={{borderColor:"#f39c12"}}>
         <b>Request error:</b> {error}
