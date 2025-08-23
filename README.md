@@ -1,5 +1,7 @@
 # YouTube Agentic Research Web App
 
+**Live app:** https://yt-agentic-research-app-f23a3d9580e6.herokuapp.com/
+
 Research any topic on **YouTube** and get **structured insights in seconds**.
 This agentic web app finds the best videos, summarizes them with timestamps and confidence, and synthesizes a clean report (TL;DR, themes, highlights, risks/opportunities, next steps).
 
