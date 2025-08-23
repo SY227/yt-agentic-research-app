@@ -1,6 +1,7 @@
 # YouTube Agentic Research Web App
 
-Research any topic on **YouTube** and get **structured insights in seconds**. The app finds the best videos, summarizes them with timestamps and confidence, and synthesizes a clean report (TL;DR, themes, highlights, risks/opportunities, next steps).
+Research any topic on **YouTube** and get **structured insights in seconds**.
+This agentic web app finds the best videos, summarizes them with timestamps and confidence, and synthesizes a clean report (TL;DR, themes, highlights, risks/opportunities, next steps).
 
 ## How to use
 - Enter a topic and press Research; results stream in (agent log, per-video digests, synthesized report).
@@ -24,7 +25,7 @@ docker compose up --build   # http://localhost:8080
 ```
 
 ## Environment
-- Create a **root** `.env` with:
+- Create a root `.env` with:
 ```bash
 PORT=8787
 YOUTUBE_API_KEY=""
